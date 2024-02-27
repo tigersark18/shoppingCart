@@ -2,6 +2,8 @@ package com.shopingcart.services;
 
 import com.shopingcart.models.Cart;
 import com.shopingcart.models.Product;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
@@ -16,6 +18,8 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 @Service
+@Getter
+@Setter
 public class CartService {
 
     private final int TTL = 10*60*1000;
@@ -35,7 +39,7 @@ public class CartService {
     public ResponseEntity<Map<String, String>> createCart(){
         String cartId = UUID.randomUUID().toString();
         this.carts.put(cartId, new Cart(cartId, new ArrayList<>()));
-        HashMap map = new HashMap();
+        HashMap<String, String> map = new HashMap<>();
         map.put("CartId", cartId);
         return ResponseEntity.ok().body(map);
     }
@@ -43,7 +47,7 @@ public class CartService {
     public ResponseEntity<Map<String, Object>> getCart(String cartId){
         Cart cart = this.carts.get(cartId);
         if (cart == null) {
-            HashMap map = new HashMap();
+            HashMap<String, Object> map = new HashMap<>();
             map.put("CartId", cartId);
             map.put("Description", "Cart not found");
             return ResponseEntity.ok().body(map);
@@ -57,7 +61,7 @@ public class CartService {
 
     public ResponseEntity<Map<String, String>> addProducts(String cartId, List<Product> products){
         Cart cart = this.carts.get(cartId);
-        HashMap map = new HashMap();
+        HashMap<String, String> map = new HashMap<>();
         map.put("CartId", cartId);
         if (cart == null) {
             map.put("Description", "Cart not found");
@@ -80,7 +84,7 @@ public class CartService {
     }
 
     public ResponseEntity<Map<String, String>> deleteCart(String cartId){
-        HashMap map = new HashMap();
+        HashMap<String, String> map = new HashMap<>();
         map.put("CartId", cartId);
         if (this.carts.remove(cartId) != null) {
             map.put("Description", "Cart deleted");
